@@ -4,23 +4,31 @@ class Graph:
     def __init__(self, V, E):
         self.V = V
         self.E = E
+        self.n = len(V)
+        self.m = len(E)
+        self.edges_dict = {}
+        for v in V:
+            self.edges_dict[v] = {}
+
+        for e in E:
+            self.edges_dict[e[0]][e[1]] = e[2]
+
+    @staticmethod
+    def is_acyclic(E):
+        aux_vertices_dict = {}
+
+        for e in E:
+            if e[1] in aux_vertices_dict == False:
+                aux_vertices_dict[e[1]] = e[0]
+            elif aux_vertices_dict[e[1]] != e[0]:
+                return False
+        return True
 
     def adjacents(self, v):
-        adjacents = []
-        for e in self.E:
-            if v == e[0] and v != e[1] and e[1] not in adjacents:
-                adjacents.append(e[1])
-            elif v == e[1] and v != e[0] and e[0] not in adjacents:
-                adjacents.append(e[0])
-        return adjacents
+        return self.edges_dict[v].keys()
 
     def weight(self, u, v):
-        for e in self.E:
-            if e[0] == u and e[1] == v:
-                return e[2]
-            elif e[0] == v and e[1] == u:
-                return e[2]
-        return math.inf
+        return self.edges_dict[u][v]
 
     def print_graph(self):
         print('{} {}'.format(len(self.V), len(self.E)))
