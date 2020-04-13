@@ -18,25 +18,30 @@ class Heap:
             self.min_heapify(half_way-(i+1))
 
     def min_heapify(self, index):
-        left_child = (2*index)+1
-        right_child = (2*index)+2
-        heap_size = len(self.heap)
 
-        smallest = index
+        done = False
+        while not done:
+            left_child = (2*index)+1
+            right_child = (2*index)+2
+            heap_size = len(self.heap)
 
-        if left_child < heap_size:
-            # self.heap[left_child][0] will access the minimum weight of any edge connecting the vertex
-            # to the mst, these values are initially set to +inf by Prism's algorithm
-            if self.heap[left_child][0] < self.heap[index][0]:
-                smallest = left_child
+            smallest = index
 
-        if right_child < heap_size:
-            if self.heap[right_child][0] < self.heap[smallest][0]:
-                smallest = right_child
+            if left_child < heap_size:
+                # self.heap[left_child][0] will access the minimum weight of any edge connecting the vertex
+                # to the mst, these values are initially set to +inf by Prism's algorithm
+                if self.heap[left_child][0] < self.heap[index][0]:
+                    smallest = left_child
 
-        if smallest != index:
-            self.heap[index], self.heap[smallest] = self.heap[smallest], self.heap[index]
-            self.min_heapify(smallest)
+            if right_child < heap_size:
+                if self.heap[right_child][0] < self.heap[smallest][0]:
+                    smallest = right_child
+
+            if smallest != index:
+                self.heap[index], self.heap[smallest] = self.heap[smallest], self.heap[index]
+                index = smallest
+            else:
+                done = True
 
     def insert(self, insertee):
         self.heap.append(insertee)
@@ -47,6 +52,7 @@ class Heap:
         if len(self.heap) > 0:
             last = self.heap.pop(-1)
             self.heap.insert(0, last)
+            self.build_min_heap()
         return root
 
     def delete(self, v):
@@ -72,13 +78,10 @@ class Heap:
                 return i
         return -1
 
-    def key(self, v):
-        # what's the weight associated to v?
+    def key(self, v_position):
+        # what's the weight associated to v_position?
         # returns math.inf if not in the heap, will be called only if in heap anyway.
-        for h in self.heap:
-            if v == h[1]:
-                return h[0]
-        return math.inf
+        return self.heap[v_position][0]
 
     def is_empty(self):
         return len(self.heap) == 0
