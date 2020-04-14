@@ -22,15 +22,25 @@ for file in os.listdir(directory_name):
             gr = txt_reader.file_to_graph(file_path)
             beginning = time.time()
 
-            # mst, mst_weight = algorithms.kruskal(gr)
-            mst, mst_weight = algorithms.naive_kruskal(gr)
-            # mst, mst_weight = algorithms.prim(gr, 6)
-            weights.append(mst_weight)
+            m1, prim_weight = algorithms.prim(gr, 6)
+            m2, kruskal_weight = algorithms.kruskal(gr)
+            m3, naive_kruskal_weight = algorithms.naive_kruskal(gr)
+
+            print("-----------------------------------------------------------------")
+            print("prim_weight {}".format(prim_weight))
+            print("kruskal_weight {}".format(kruskal_weight))
+            print("naive_kruskal_weight {}".format(naive_kruskal_weight))
+            print(prim_weight == kruskal_weight == naive_kruskal_weight)
+            print("-----------------------------------------------------------------")
             end = time.time()
-            print("Done... {}".format(mst_weight))
+
             i += 1
             times.append(end - beginning)
 
+
+"""
 f = open('naive_kruskal_times.txt', 'w+')
 for t, fn, w in zip(times, file_names, weights):
     f.write('{}, {}, {}\n'.format(fn, t, w))
+
+"""

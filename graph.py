@@ -18,7 +18,7 @@ class Graph:
                         self.edges_dict[e[1]][e[0]] = e[2]
 
                         for i in range(0, len(self.E)):
-                            if self.E[i][0] == e[0] and self.E[i][1] == e[1]:
+                            if (self.E[i][0] == e[0] and self.E[i][1] == e[1]) or (self.E[i][0] == e[1] and self.E[i][1] == e[0]):
                                 self.E[i][2] = e[2]
                                 break
                 else:
