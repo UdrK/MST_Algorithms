@@ -1,91 +1,75 @@
-# heap class based on the description given in
-# Introduction to Algorithms by Cormen, Leiserson, Rivest, Stein, third edition.
-
-# it will be used in the Prism's algorithm to find a mst
-# therefore each element in the list self.heap will be a list of 2 numbers:
-# first: the minimum weight of any edge that connects the vertex to the mst
-# second: the vertex
-
-import math
-
 class Heap:
     def __init__(self):
         self.heap = []
+        self.weights = {}
 
-    def build_min_heap(self):
-        half_way = int(len(self.heap)/2)
-        for i in range(0, half_way):
-            self.min_heapify(half_way-(i+1))
+    def build_heap(self):
+        n = len(self.heap)
+        for i in reversed(range(n // 2)):
+            self.siftup(i)
 
-    def min_heapify(self, index):
+    def siftup(self, index):
+        end = len(self.heap)
+        start = index
+        new_item = self.heap[index]
 
-        done = False
-        while not done:
-            left_child = (2*index)+1
-            right_child = (2*index)+2
-            heap_size = len(self.heap)
+        child_index = 2 * index + 1
+        while child_index < end:
+            right_index = child_index + 1
 
-            smallest = index
+            if right_index < end:
+                child = self.heap[child_index]
+                right = self.heap[right_index]
+                if not (self.weights[child] < self.weights[right]):
+                    child_index = right_index
 
-            if left_child < heap_size:
-                # self.heap[left_child][0] will access the minimum weight of any edge connecting the vertex
-                # to the mst, these values are initially set to +inf by Prism's algorithm
-                if self.heap[left_child][0] < self.heap[index][0]:
-                    smallest = left_child
+            self.heap[index] = self.heap[child_index]
 
-            if right_child < heap_size:
-                if self.heap[right_child][0] < self.heap[smallest][0]:
-                    smallest = right_child
+            index = child_index
+            child_index = 2 * index + 1
 
-            if smallest != index:
-                self.heap[index], self.heap[smallest] = self.heap[smallest], self.heap[index]
-                index = smallest
-            else:
-                done = True
+        self.heap[index] = new_item
 
-    def insert(self, insertee):
-        self.heap.append(insertee)
-        self.build_min_heap()
+        self.siftdown(start, index)
+
+    def siftdown(self, start, index):
+        new_item = self.heap[index]
+
+        while index > start:
+            parent_index = (index - 1) >> 1
+            parent = self.heap[parent_index]
+            if self.weights[new_item] < self.weights[parent]:
+                self.heap[index] = parent
+                index = parent_index
+                continue
+            break
+
+        self.heap[index] = new_item
+
+    def push(self, pushee):
+        self.heap.append(pushee[1])
+        self.weights[pushee[1]] = pushee[0]
+        self.siftdown(0, len(self.heap) - 1)
 
     def pop(self):
-        root = self.heap.pop(0)
+        returnee = self.heap.pop(0)
+        weight = self.weights[returnee]
+        del(self.weights[returnee])
         if len(self.heap) > 0:
             last = self.heap.pop(-1)
             self.heap.insert(0, last)
-            self.build_min_heap()
-        return root
-
-    def delete(self, v):
-        # when deleting an arbitrary vertex in the heap i need to swap it with the
-        # leftmost lowermost leaf in the subtree to keep the tree balanced.
-        if v < len(self.heap):
-            rightmost_lowest_index = v
-            while (2*rightmost_lowest_index)+2 < len(self.heap):
-                rightmost_lowest_index = (2*rightmost_lowest_index)+2
-
-            while rightmost_lowest_index+2 < len(self.heap):
-                rightmost_lowest_index += 2
-
-            self.heap[v] = self.heap[rightmost_lowest_index]
-            del(self.heap[rightmost_lowest_index])
-            self.build_min_heap()
-
-    def contains(self, v):
-        # is the vertex v in the heap?
-        # returns its position, or -1 if not in the heap.
-        for i in range(0, len(self.heap)):
-            if v == self.heap[i][1]:
-                return i
-        return -1
-
-    def key(self, v_position):
-        # what's the weight associated to v_position?
-        # returns math.inf if not in the heap, will be called only if in heap anyway.
-        return self.heap[v_position][0]
+            self.siftup(0)
+        return [weight, returnee]
 
     def is_empty(self):
         return len(self.heap) == 0
 
-    def print_heap(self):
-        for h in self.heap:
-            print(h)
+    def update(self, new_weight, vertex):
+        self.weights[vertex] = new_weight
+        self.build_heap()
+
+    def contains(self, vertex):
+        return vertex in self.weights
+
+    def weight(self, vertex):
+        return self.weights[vertex]

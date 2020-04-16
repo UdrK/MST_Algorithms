@@ -9,7 +9,6 @@ class Graph:
         for v in V:
             self.edges_dict[v] = {}
 
-        # formare self.E qua V dentro
         for e in E:
             if e[0] != e[1]:
                 if e[0] in self.edges_dict and e[1] in self.edges_dict[e[0]]:

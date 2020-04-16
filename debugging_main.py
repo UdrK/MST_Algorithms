@@ -7,40 +7,50 @@ import time
 
 directory_name = 'mst_dataset'
 
-graphs = []
 file_names = []
-times = []
-weights = []
+times_prim = []
+times_naive_kruskal = []
+times_kruskal = []
 
-i = 1
+weights_prim = []
+weights_naive_kruskal = []
+weights_kruskal = []
+
+i=1
+tot = len(os.listdir(directory_name))
 for file in os.listdir(directory_name):
-    if i<20:
-        filename = os.fsdecode(file)
-        if filename.endswith(".txt"):
-            file_path = os.path.join(directory_name, filename)
-            file_names.append(file_path)
-            gr = txt_reader.file_to_graph(file_path)
-            beginning = time.time()
+    filename = os.fsdecode(file)
+    if filename.endswith(".txt"):
+        file_path = os.path.join(directory_name, filename)
+        file_names.append(file_path)
+        gr = txt_reader.file_to_graph(file_path)
 
-            m1, prim_weight = algorithms.prim(gr, 6)
-            m2, kruskal_weight = algorithms.kruskal(gr)
-            m3, naive_kruskal_weight = algorithms.naive_kruskal(gr)
-
-            print("-----------------------------------------------------------------")
-            print("prim_weight {}".format(prim_weight))
-            print("kruskal_weight {}".format(kruskal_weight))
-            print("naive_kruskal_weight {}".format(naive_kruskal_weight))
-            print(prim_weight == kruskal_weight == naive_kruskal_weight)
-            print("-----------------------------------------------------------------")
-            end = time.time()
-
-            i += 1
-            times.append(end - beginning)
+        beginning_prim = time.time()
+        m1, prim_weight = algorithms.prim(gr, 1)
+        end_prim = time.time()
 
 
-"""
-f = open('naive_kruskal_times.txt', 'w+')
-for t, fn, w in zip(times, file_names, weights):
-    f.write('{}, {}, {}\n'.format(fn, t, w))
+        beginning_naive = time.time()
+        m2, naive_kruskal_weight = algorithms.naive_kruskal(gr)
+        end_naive = time.time()
+        
+        beginning_kruskal = time.time()
+        m3, kruskal_weight = algorithms.kruskal(gr)
+        end_kruskal = time.time()
 
-"""
+        print('The algorithms agree {}/{}: {}'.format(i, tot, prim_weight == naive_kruskal_weight == kruskal_weight)) # == naive_kruskal_weight
+        i+=1
+
+        f_prim = open('prim_results.txt', 'a+')
+        f_prim.write('{}, {}, {}\n'.format(filename, end_prim - beginning_prim, prim_weight))
+        f_prim.close()
+
+
+        f_prim = open('naive_results.txt', 'a+')
+        f_prim.write('{}, {}, {}\n'.format(filename, end_naive - beginning_naive, naive_kruskal_weight))
+        f_prim.close()
+        
+
+        f_prim = open('kruskal_results.txt', 'a+')
+        f_prim.write('{}, {}, {}\n'.format(filename, end_kruskal-beginning_kruskal, kruskal_weight))
+        f_prim.close()

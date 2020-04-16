@@ -1,37 +1,6 @@
-from heap import Heap
+from new_heap import Heap
 from union_find import UnionFind
 import math
-
-def prim(g, s):
-    MST = []
-    MST_weight = 0
-    heap = Heap()
-
-    for v in g.V:
-        if v == s:
-            heap.insert([0, v])
-            MST.append(0)
-        else:
-            heap.insert([math.inf, v])
-            MST.append(-1)
-
-    while heap.is_empty() == False:
-        u = heap.pop()[1]
-        u_adjacents = g.adjacents(u)
-        for v in u_adjacents:
-            v_position = heap.contains(v)
-            if v_position >= 0: # if v_position == -1 then heap doesn't contain v, i need the position to delete the node
-                u_v_weight = g.weight(u, v) # returns math.inf if no edge is found, however at this point we know there is one
-                if u_v_weight < heap.key(v_position):
-                    MST[v-1] = u
-                    heap.delete(v_position)
-                    heap.insert([u_v_weight, v])
-
-    for i in range(0, len(MST)):
-        if not MST[i] == 0:
-            MST_weight += g.edges_dict[i+1][MST[i]]
-
-    return MST, MST_weight
 
 def is_acyclic(edges, new_edge):
 
@@ -63,15 +32,44 @@ def is_acyclic(edges, new_edge):
     return True
 
 
-def naive_kruskal(g):
+def prim(g, s):
+    MST = []
+    MST_weight = 0
+    heap = Heap()
 
+    for v in g.V:
+        if v == s:
+            heap.push([0, v])
+            MST.append(0)
+        else:
+            heap.push([math.inf, v])
+            MST.append(-1)
+
+    while heap.is_empty() == False:
+        u = heap.pop()[1]
+        u_adjacents = g.adjacents(u)
+        for v in u_adjacents:
+            if heap.contains(v):
+                u_v_weight = g.weight(u,v)
+                if u_v_weight < heap.weight(v):
+                    MST[v - 1] = u
+                    heap.update(u_v_weight, v)
+
+    for i in range(0, len(MST)):
+        if not MST[i] == 0:
+            MST_weight += g.edges_dict[i + 1][MST[i]]
+
+    return MST, MST_weight
+
+
+def naive_kruskal(g):
     aux_vertices_dict = {}
 
     MST = []
     MST_weight = 0
     heap = Heap()
     for e in g.E:
-        heap.insert([e[2], [e[0], e[1]]])
+        heap.push([e[2], (e[0], e[1])])
 
     done = False
     while not done:
@@ -90,13 +88,13 @@ def naive_kruskal(g):
             MST_weight += edge[2]
             MST.append(edge)
 
-        if len(MST) == g.n-1 or heap.is_empty():
+        if len(MST) == g.n - 1 or heap.is_empty():
             done = True
 
     return MST, MST_weight
 
-def kruskal(g):
 
+def kruskal(g):
     MST = []
     MST_weight = 0
     U = UnionFind()
@@ -104,13 +102,11 @@ def kruskal(g):
 
     heap = Heap()
     for e in g.E:
-        heap.insert([e[2], [e[0], e[1]]])
+        heap.push([e[2], (e[0], e[1])])
 
-    done = False
-    while not done:
-
+    while not (len(MST) == g.n - 1 or heap.is_empty()):
         aux_edge = heap.pop()
-        edge = [aux_edge[1][0], aux_edge[1][1], aux_edge[0]] # original edge format: v1, v2, w
+        edge = [aux_edge[1][0], aux_edge[1][1], aux_edge[0]]
         e0_find = U.find(edge[0])
         e1_find = U.find(edge[1])
 
@@ -118,8 +114,5 @@ def kruskal(g):
             MST.append(edge)
             MST_weight += edge[2]
             U.union(e0_find, e1_find)
-
-        if len(MST) == g.n-1 or heap.is_empty():
-            done = True
 
     return MST, MST_weight
