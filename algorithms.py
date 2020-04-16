@@ -1,4 +1,4 @@
-from new_heap import Heap
+from heap import Heap
 from union_find import UnionFind
 import math
 

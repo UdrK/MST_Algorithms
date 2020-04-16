@@ -1,5 +1,3 @@
-import math
-
 class Graph:
     def __init__(self, V, E):
         self.edges_dict = {}
