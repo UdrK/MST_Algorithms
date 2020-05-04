@@ -1,9 +1,10 @@
+# implementation of heap based on heapq.py
 class Heap:
     def __init__(self):
         self.heap = []
-        self.weights = {}
+        self.weights = {}       # used to make update, contains and weight faster
 
-    def build_heap(self):
+    def build_heap(self):           # heapify
         n = len(self.heap)
         for i in reversed(range(n // 2)):
             self.siftup(i)
@@ -32,6 +33,7 @@ class Heap:
 
         self.siftdown(start, index)
 
+    # used in siftup
     def siftdown(self, start, index):
         new_item = self.heap[index]
 
@@ -46,9 +48,9 @@ class Heap:
 
         self.heap[index] = new_item
 
-    def push(self, pushee):
+    def push(self, pushee):     # expects pushee to be [cost, vertex]
         self.heap.append(pushee[1])
-        self.weights[pushee[1]] = pushee[0]
+        self.weights[pushee[1]] = pushee[0]     # updates dictionary of weights used to make certain operations faster
         self.siftdown(0, len(self.heap) - 1)
 
     def pop(self):

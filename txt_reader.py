@@ -4,7 +4,6 @@ def file_to_graph(file_path):
     f = open(file_path, 'r')
     file_lines = f.readlines()
 
-    V = []
     E = []
 
     number_of_vertices = int(file_lines[0].split()[0])

@@ -1,10 +1,11 @@
 class Graph:
     def __init__(self, V, E):
-        self.edges_dict = {}
-        self.E = []
-        self.V = V
+        self.edges_dict = {}    # adjacency matrix dictionary of dictionaries
+        self.E = [] # list of edges
+        self.V = V  # list of vertices
         self.n = len(V)
-        for v in V:
+
+        for v in V:             # inizializing the adjacency matrix
             self.edges_dict[v] = {}
 
         for e in E:
