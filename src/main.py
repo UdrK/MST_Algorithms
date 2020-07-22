@@ -5,7 +5,7 @@ import algorithms
 import os
 import time
 
-directory_name = 'mst_dataset'
+directory_name = '../mst_dataset'
 
 file_names = []
 times_prim = []
