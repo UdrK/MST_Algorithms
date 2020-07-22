@@ -13,3 +13,4 @@ The algorithms to be implemented are:
 - Kruskal's algorithm (with union-find)
 
 All non-trivial datastructures (heap for Prim and union-find for Kruskal) have been implemented from scratch.
+Results in report.pdf.
