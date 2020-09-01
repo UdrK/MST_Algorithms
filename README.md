@@ -32,6 +32,6 @@ Compared to implementations in other languages python's execution time is orders
 
 The second biggest result: **Union-Find is crucial for Kruskal's algorithm**.
 
-Kruskal's algorithm is O(n log(n)) only if implemented using the union-find data structure to determine if a graph is cyclic (has loops). Otherwise, using a naive implementation of mine, it becomes O(n^2).
+Kruskal's algorithm is O(m log(n)) (with n number of vertices, m number of edges) only if implemented using the union-find data structure to determine if a graph is cyclic (has loops). Otherwise, using a naive implementation of mine, it becomes O(mn).
 
 Complete results in report.pdf
