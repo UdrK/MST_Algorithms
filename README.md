@@ -16,7 +16,7 @@ Then, an MST (minimum spanning tree) M is a couple (V', E') such that V' = V and
 
 ## The algorithms:
 
-The algorithms to be implemented are:
+The algorithms implemented are:
 
 - Prim's algorithm
 - Kruskal's algorithm (without union-find)
